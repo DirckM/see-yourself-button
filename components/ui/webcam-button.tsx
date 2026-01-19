@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import confetti from "canvas-confetti";
 
 export interface WebcamButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
@@ -26,6 +27,8 @@ export function WebcamButton({
 }: WebcamButtonProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [webcamStatus, setWebcamStatus] = useState<"loading" | "error" | "success">("loading");
+  const [hasShownConfetti, setHasShownConfetti] = useState(false);
 
   useEffect(() => {
     let stream: MediaStream | null = null;
@@ -42,10 +45,44 @@ export function WebcamButton({
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+          setWebcamStatus("success");
+          
+          // Show confetti when webcam starts
+          if (!hasShownConfetti) {
+            setHasShownConfetti(true);
+            const duration = 3000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min: number, max: number) {
+              return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(() => {
+              const timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              const particleCount = 50 * (timeLeft / duration);
+              confetti({
+                ...defaults,
+                particleCount,
+                origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+              });
+              confetti({
+                ...defaults,
+                particleCount,
+                origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+              });
+            }, 250);
+          }
         }
       } catch (error) {
         const err = error instanceof Error ? error : new Error("Failed to access webcam");
         console.error("Error accessing webcam:", err);
+        setWebcamStatus("error");
         onWebcamError?.(err);
       }
     };
@@ -57,7 +94,7 @@ export function WebcamButton({
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [videoConstraints, onWebcamError]);
+  }, [videoConstraints, onWebcamError, hasShownConfetti]);
 
   const blurClass = {
     sm: "backdrop-blur-sm",

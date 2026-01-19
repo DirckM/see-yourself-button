@@ -10,6 +10,8 @@ A beautiful, customizable webcam button component with glassmorphism effects for
 - 🎨 **Glassmorphism design** - Beautiful liquid glass aesthetic
 - 🎯 **Fully customizable** - Pass any className or style props
 - ⚡ **Smooth animations** - Hover effects and transitions
+- 🎉 **Confetti celebration** - Automatic confetti when webcam starts!
+- 💬 **Fun error messages** - Friendly prompts when webcam isn't available
 - 📱 **Responsive** - Works on all screen sizes
 - 🔧 **TypeScript** - Full type safety
 - 🎛️ **Configurable** - Control blur, mirror, hover effects, and more
@@ -30,15 +32,25 @@ A beautiful, customizable webcam button component with glassmorphism effects for
 
 2. Install required dependencies:
 
-   ```bash
-   pnpm add clsx tailwind-merge
-   # or
-   npm install clsx tailwind-merge
-   # or
-   yarn add clsx tailwind-merge
-   ```
+```bash
+pnpm add clsx tailwind-merge canvas-confetti
+# or
+npm install clsx tailwind-merge canvas-confetti
+# or
+yarn add clsx tailwind-merge canvas-confetti
+```
 
-3. Add the CSS animation to your global CSS:
+3. Install TypeScript types (optional but recommended):
+
+```bash
+pnpm add -D @types/canvas-confetti
+# or
+npm install -D @types/canvas-confetti
+# or
+yarn add -D @types/canvas-confetti
+```
+
+4. Add the CSS animation to your global CSS:
 
    ```css
    @keyframes shine {
